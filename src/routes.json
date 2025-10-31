@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.openmrs.org/routes.schema.json",
+  "backendDependencies": {},
+  "pages": [
+    {
+      "component": "facilityRegistryRoot",
+      "route": "hie/facilities",
+      "online": true,
+      "offline": false
+    },
+    {
+      "component": "healthWorkerRegistryRoot",
+      "route": "hie/health-workers",
+      "online": true,
+      "offline": false
+    }
+  ],
+  "extensions": [
+    {
+      "component": "hieNavLink",
+      "name": "hie-registry-nav",
+      "slot": "app-menu-slot",
+      "online": true,
+      "offline": false,
+      "order": 70
+    }
+  ],
+  "modals": []
+}
