@@ -1,8 +1,14 @@
+import { openmrsFetch } from '@openmrs/esm-framework';
+import {
+  type FacilitySearchFilter,
+  type HieFacility,
+  type PractitionerMessage,
+  type PractitionerResponse,
+  type PractitionerSearchParams,
+  type Provider,
+} from '../types';
 
-import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
-import { PractitionerMessage, PractitionerResponse, PractitionerSearchParams, Provider } from '../types';
-
-const HIE_BASE_URL = 'https://ngx.ampath.or.ke/hie';
+const HIE_BASE_URL = 'https://staging.ampath.or.ke/hie';
 
 /**
  * Search for a practitioner by various identifiers
@@ -12,7 +18,7 @@ const HIE_BASE_URL = 'https://ngx.ampath.or.ke/hie';
  */
 export async function searchPractitioner(
   params: PractitionerSearchParams,
-  locationUuid: string
+  locationUuid: string,
 ): Promise<PractitionerMessage | null> {
   const queryParams = new URLSearchParams();
 
@@ -116,12 +122,49 @@ export async function getProviderByNationalId(nationalId: string): Promise<Provi
   }
 }
 
+export async function fetchFacilityDetails(payload: FacilitySearchFilter) {
+  const params = new URLSearchParams();
+  params.append('filterType', payload.filterType);
+  params.append('filterValue', payload.filterValue);
+  params.append('locationUuid', payload.locationUuid);
+
+  const searchFacilityUrl = `${HIE_BASE_URL}/facility/search?${params}`;
+  const resp = await openmrsFetch(searchFacilityUrl);
+  const data: { message: HieFacility } = await resp.json();
+  return data;
+}
+
+export function getErrorResponseMessage(error) {
+  let msg = 'An error ocurred, please try again or contact support';
+  if (error.error) {
+    if (error.error.details) {
+      msg = error.error.details;
+    } else if (error.error.error) {
+      msg = error.error.error;
+    } else {
+      msg = error.error;
+    }
+  } else if (error.details) {
+    msg = error.details;
+  } else if (error.responseBody) {
+    if (error.responseBody.details) {
+      msg = error.responseBody.details;
+    }
+    if (error.responseBody.error) {
+      msg = error.responseBody.error;
+    }
+  } else if (error.message) {
+    msg = error.message;
+  }
+  return msg;
+}
+
 /**
  * Format date from YYYY-MM-DD to a more readable format
  */
 export function formatDate(dateString: string): string {
   if (!dateString) return '';
-  
+
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
