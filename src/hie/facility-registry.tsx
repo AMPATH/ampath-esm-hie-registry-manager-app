@@ -1,102 +1,198 @@
-import React, { useMemo } from 'react';
-import {
-  DataTable,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableBody,
-  TableCell,
-  Button,
-  Grid,
-  Column,
-} from '@carbon/react';
-import { Download } from '@carbon/icons-react';
-import { showSnackbar } from '@openmrs/esm-framework';
-import styles from './facility-registry.scss'; // optional custom styling
+import React, { useEffect, useState } from 'react';
+import { openmrsFetch, restBaseUrl, showSnackbar, useSession } from '@openmrs/esm-framework';
+import styles from './facility-registry.css';
+import { Button, InlineLoading, Select, SelectItem, TextInput } from '@carbon/react';
+import { type Location } from '@openmrs/esm-framework/src';
+import FacilityDetails from './facility-details/facility-details';
+import { type FacilitySearchFilter, type HieFacility } from '../types';
+import { fetchFacilityDetails, getErrorResponseMessage } from './hie-resource';
 
-const DUMMY_FACILITIES = [
-  { uuid: 'fac-1', name: 'Mosoriot Health Centre', code: 'MOS' },
-  { uuid: 'fac-2', name: 'AMPATH Eldoret', code: 'ELD' },
-  { uuid: 'fac-3', name: 'MTRH Clinic', code: 'MTRH' },
-];
+const FacilityRegistry: React.FC = () => {
+  const [locations, setLocations] = useState([]);
+  const [selectedValue, setSelectedValue] = useState<string>(null);
+  const [selectedFilter, setSelectedFilter] = useState<string>(null);
+  const [currentFacility, setCurrentFacility] = useState<HieFacility>(null);
+  const locationOptions: { value: string; label: string }[] = generateLocationOptions(locations);
+  const [loading, setLoading] = useState<boolean>(false);
+  const session = useSession();
 
-export default function FacilityRegistryPage() {
-  const facilities = useMemo(() => DUMMY_FACILITIES, []);
+  useEffect(() => {
+    getAmrsLocations();
+  }, []);
 
-  const handleSync = (facility) => {
-    showSnackbar({
-      title: 'Sync started',
-      subtitle: `${facility.name} is being synced.`,
-      kind: 'info',
-    });
+  const getAmrsLocations = async () => {
+    const url = `${restBaseUrl}/location?v=full`;
+    const resp = await openmrsFetch(url);
+    const data = await resp.json();
+    setLocations(data?.results ?? []);
   };
 
-  const headers = [
-    { key: 'code', header: 'Code' },
-    { key: 'name', header: 'Name' },
-    { key: 'actions', header: 'Actions' },
-  ];
+  function generateLocationOptions(locations: Location[]): { value: string; label: string }[] {
+    if (!locations || locations.length === 0) return [];
 
-  const rows = facilities.map((f) => ({
-    id: f.uuid,
-    code: f.code,
-    name: f.name,
-    actions: f.uuid,
-  }));
+    const l = locations.map((l) => {
+      return {
+        value: getMflCode(l),
+        label: l?.display ?? '',
+      };
+    });
+    return l;
+  }
+
+  const getFilterType = (selectedFilter: string) => {
+    let filterType = 'facilityCode';
+    if (['location', 'facility_code'].includes(selectedFilter)) {
+      filterType = 'facilityCode';
+    }
+    if (selectedFilter === 'registration_number') {
+      filterType = 'registrationNumber';
+    }
+
+    return filterType;
+  };
+
+  function getMflCode(location: Location) {
+    const attributes = location.attributes ?? [];
+    let mflCodeAttribute;
+    if (attributes.length > 0) {
+      mflCodeAttribute = attributes.find((a) => {
+        return a.attributeType.uuid === 'fe45d489-087c-4b13-b2ec-3b294d7aee32';
+      });
+    }
+    if (mflCodeAttribute) {
+      return mflCodeAttribute.value;
+    }
+
+    return '';
+  }
+
+  const handleFacilityChange = ($event) => {
+    setSelectedValue($event.target.value);
+  };
+
+  const handleFilterChange = ($event) => {
+    setSelectedFilter($event.target.value);
+  };
+
+  const handleFacilitySearch = async () => {
+    setCurrentFacility(null);
+    const payload = generatePayload({
+      filterType: selectedFilter,
+      value: selectedValue,
+    });
+    if (!isValidPayload(payload)) {
+      return;
+    }
+    setLoading(true);
+    try {
+      const data = await fetchFacilityDetails(payload);
+      if (data.message) {
+        setCurrentFacility(data.message);
+      }
+    } catch (e) {
+      const errMsg = getErrorResponseMessage(e);
+      showSnackbar({
+        title: 'Error fetching facility',
+        subtitle:
+          errMsg ?? 'An error occurred while fetching the facility details, please try again or contact support',
+        kind: 'error',
+      });
+    }
+    setLoading(false);
+  };
+
+  const generatePayload = (data: { filterType: string; value: string }): FacilitySearchFilter => {
+    const payload: FacilitySearchFilter = {
+      filterType: getFilterType(data.filterType),
+      filterValue: data.value,
+      locationUuid: session?.sessionLocation?.uuid,
+    };
+
+    return payload;
+  };
+
+  const isValidPayload = (payload: FacilitySearchFilter): boolean => {
+    if (!payload.filterType) {
+      showSnackbar({
+        title: 'Missing Filter Type',
+        subtitle: 'Please select a filter type',
+        kind: 'error',
+      });
+      return false;
+    }
+    if (!payload.filterValue) {
+      showSnackbar({
+        title: 'Missing Filter Value',
+        subtitle: 'Please select a filter value',
+        kind: 'error',
+      });
+      return false;
+    }
+    if (!payload.locationUuid) {
+      showSnackbar({
+        title: 'Missing User Loaction',
+        subtitle: 'Please make sure you have set your default facility location',
+        kind: 'error',
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleValueChange = ($event) => {
+    setSelectedValue($event.target.value);
+  };
 
   return (
-    <div className="omrs-content"> {/* ✅ ensures proper layout under top bar and beside sidebar */}
-      <Grid fullWidth>
-        <Column sm={4} md={8} lg={12}>
-          <h2 className="cds--heading-03" style={{ marginBottom: '1rem' }}>
-            HIE Registry Manager – Facility Registry
-          </h2>
+    <>
+      <div className={styles.facilityRegistryLayout}>
+        <h3>Facility Registry</h3>
+        <hr className=""></hr>
+        <div className={styles.facilityFiltersLayout}>
+          <div className={styles.filterItem}>
+            <Select id="filter" labelText="Select a Filter" size="md" onChange={handleFilterChange}>
+              <SelectItem text="Select Filter" value="" />;
+              <SelectItem text="Location" value="location" />
+              <SelectItem text="Facility/MFL Code" value="facility_code" />
+              <SelectItem text="Registration Number" value="registration_number" />
+            </Select>
+          </div>
 
-          <DataTable rows={rows} headers={headers}>
-            {({ rows, headers, getHeaderProps, getRowProps }) => (
-              <TableContainer>
-                <Table size="sm">
-                  <TableHead>
-                    <TableRow>
-                      {headers.map((header) => (
-                        <TableHeader key={header.key} {...getHeaderProps({ header })}>
-                          {header.header}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.id} {...getRowProps({ row })}>
-                        {row.cells.map((cell) => {
-                          if (cell.info.header === 'actions') {
-                            const facility = facilities.find((f) => f.uuid === row.id);
-                            return (
-                              <TableCell key={cell.id}>
-                                <Button
-                                  kind="tertiary"
-                                  size="sm"
-                                  renderIcon={Download}
-                                  onClick={() => handleSync(facility)}
-                                >
-                                  Sync
-                                </Button>
-                              </TableCell>
-                            );
-                          }
-                          return <TableCell key={cell.id}>{cell.value}</TableCell>;
-                        })}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </DataTable>
-        </Column>
-      </Grid>
-    </div>
+          {selectedFilter === 'location' ? (
+            <div className={styles.filterItem}>
+              <Select id="facility" labelText="Select a Facility" size="md" onChange={handleFacilityChange}>
+                <SelectItem text="Select Facility" value="" />;
+                {locationOptions.map((l) => {
+                  return <SelectItem text={l.label} value={l.value} />;
+                })}
+              </Select>
+            </div>
+          ) : (
+            <div className={styles.filterItem}>
+              <TextInput id="filter-value" labelText="Value" onChange={handleValueChange} size="md" type="text" />
+            </div>
+          )}
+          <div className={styles.filterItem}>
+            <div className={styles.searchBtnContainer}>
+              {loading ? (
+                <Button onClick={handleFacilitySearch} disabled={true}>
+                  <InlineLoading description="Fetching..." />
+                </Button>
+              ) : (
+                <>
+                  <Button onClick={handleFacilitySearch}>Search</Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+        <div></div>
+        <div className={styles.facilityDetails}>
+          <FacilityDetails facility={currentFacility} />
+        </div>
+      </div>
+    </>
   );
-}
+};
+
+export default FacilityRegistry;
