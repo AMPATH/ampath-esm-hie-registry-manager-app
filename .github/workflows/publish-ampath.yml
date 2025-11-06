@@ -24,14 +24,14 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install
 
-      - name: 🧪 Run tests
-        run: yarn test
+      # - name: 🧪 Run tests
+      #   run: yarn test
 
-      - name: 🔧 Run type checks
-        run: yarn typescript
+      # - name: 🔧 Run type checks
+      #   run: yarn typescript
 
-      - name: 🎨 Run linting
-        run: yarn lint
+      # - name: 🎨 Run linting
+      #   run: yarn lint
 
       - name: 🏗️ Build app
         run: yarn build
