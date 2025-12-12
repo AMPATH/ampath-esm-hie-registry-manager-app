@@ -8,7 +8,7 @@
   "source": true,
   "scripts": {
     "start": "openmrs develop",
-    "dev": "openmrs develop --backend=https://staging.ampath.or.ke  --api-url=/openmrs --sources=. --port=9003",
+    "dev": "openmrs develop --backend=https://staging.ampath.or.ke  --api-url=/openmrs --config-url=https://ngx.ampath.or.ke/o3-config.json  --sources=. --port=9003",
     "serve": "webpack serve --mode=development",
     "build": "webpack --mode production",
     "analyze": "webpack --mode=production --env analyze=true",
@@ -47,6 +47,7 @@
   },
   "peerDependencies": {
     "@openmrs/esm-framework": "*",
+    "@openmrs/esm-patient-common-lib": "11.x",
     "dayjs": "1.x",
     "react": "18.x",
     "react-i18next": "16.x",
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "@openmrs/esm-framework": "next",
+    "@openmrs/esm-patient-common-lib": "next",
     "@openmrs/esm-styleguide": "next",
     "@playwright/test": "^1.52.0",
     "@swc/cli": "^0.3.12",
