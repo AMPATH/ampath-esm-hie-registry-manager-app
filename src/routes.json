@@ -13,6 +13,12 @@
       "route": "hie/health-workers",
       "online": true,
       "offline": false
+    },
+     {
+      "component": "shrDetails",
+      "route": "hie/shared-health-records",
+      "online": true,
+      "offline": false
     }
   ],
   "extensions": [
@@ -23,6 +29,31 @@
       "online": true,
       "offline": false,
       "order": 70
+    },
+     {
+      "name": "shr-summary-dashboard",
+      "slot": "patient-chart-dashboard-slot",
+      "component": "shrDashboardLink",
+      "meta": {
+        "slot": "patient-chart-shr-summary-dashboard-slot",
+        "path": "SHR",
+        "layoutMode": "anchored"
+      },
+      "order": 5,
+      "online": true,
+      "offline": true
+    },
+    {
+      "name": "shr-details-overview",
+      "slot": "patient-chart-shr-summary-dashboard-slot",
+      "component": "shrDetails",
+      "order": 1,
+      "meta": {
+        "title": "SHR",
+        "view": "shr"
+      },
+      "online": true,
+      "offline": true
     }
   ],
   "modals": []
