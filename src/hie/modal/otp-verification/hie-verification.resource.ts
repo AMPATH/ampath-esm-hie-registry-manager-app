@@ -5,11 +5,11 @@ import {
   type ValidateHieCustomOtpDto,
   type ValidateHieCustomOtpResponse,
 } from '../../../types';
-
-const baseUrl = 'https://staging.ampath.or.ke/hie';
+import { getHieBaseUrl } from '../../../shared/utils/get-base-url';
 
 export async function requestCustomOtp(requestCustomOtpDto: RequestCustomOtpDto): Promise<RequestCustomOtpResponse> {
-  const customOtpUrl = `${baseUrl}/client/send-custom-otp`;
+  const hieBaseUrl = await getHieBaseUrl();
+  const customOtpUrl = `${hieBaseUrl}/client/send-custom-otp`;
   const resp = await openmrsFetch(customOtpUrl, {
     method: 'POST',
     headers: {
@@ -24,7 +24,8 @@ export async function requestCustomOtp(requestCustomOtpDto: RequestCustomOtpDto)
 export async function validateCustomOtp(
   validateHieCustomOtpDto: ValidateHieCustomOtpDto,
 ): Promise<ValidateHieCustomOtpResponse> {
-  const validateOtpUrl = `${baseUrl}/client/validate-custom-otp`;
+  const hieBaseUrl = await getHieBaseUrl();
+  const validateOtpUrl = `${hieBaseUrl}/client/validate-custom-otp`;
   const resp = await openmrsFetch(validateOtpUrl, {
     method: 'POST',
     headers: {
