@@ -7,8 +7,7 @@ import {
   type PractitionerSearchParams,
   type Provider,
 } from '../types';
-
-const HIE_BASE_URL = 'https://staging.ampath.or.ke/hie';
+import { getHieBaseUrl } from '../shared/utils/get-base-url';
 
 /**
  * Search for a practitioner by various identifiers
@@ -39,7 +38,9 @@ export async function searchPractitioner(
     queryParams.append('refresh', String(params.refresh));
   }
 
-  const url = `${HIE_BASE_URL}/practitioner/search?${queryParams.toString()}`;
+  const hieBaseUrl = await getHieBaseUrl();
+
+  const url = `${hieBaseUrl}/practitioner/search?${queryParams.toString()}`;
 
   try {
     const response = await fetch(url, {
@@ -72,7 +73,8 @@ export async function searchPractitioner(
  * @returns Promise with array of providers
  */
 export async function getAllProviders(locationUuid: string): Promise<Provider[]> {
-  const url = `${HIE_BASE_URL}/amrs/providers/active?locationUuid=${locationUuid}`;
+  const hieBaseUrl = await getHieBaseUrl();
+  const url = `${hieBaseUrl}/amrs/providers/active?locationUuid=${locationUuid}`;
 
   try {
     const response = await fetch(url, {
@@ -100,7 +102,8 @@ export async function getAllProviders(locationUuid: string): Promise<Provider[]>
  * @returns Promise with provider details
  */
 export async function getProviderByNationalId(nationalId: string): Promise<Provider[]> {
-  const url = `${HIE_BASE_URL}/amrs/provider/national-id?nationalId=${nationalId}`;
+  const hieBaseUrl = await getHieBaseUrl();
+  const url = `${hieBaseUrl}/amrs/provider/national-id?nationalId=${nationalId}`;
 
   try {
     const response = await fetch(url, {
@@ -128,7 +131,9 @@ export async function fetchFacilityDetails(payload: FacilitySearchFilter) {
   params.append('filterValue', payload.filterValue);
   params.append('locationUuid', payload.locationUuid);
 
-  const searchFacilityUrl = `${HIE_BASE_URL}/facility/search?${params}`;
+  const hieBaseUrl = await getHieBaseUrl();
+
+  const searchFacilityUrl = `${hieBaseUrl}/facility/search?${params}`;
   const resp = await openmrsFetch(searchFacilityUrl);
   const data: { message: HieFacility } = await resp.json();
   return data;

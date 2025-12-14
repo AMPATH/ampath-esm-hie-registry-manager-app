@@ -1,10 +1,10 @@
+import { getHieBaseUrl } from '../../../shared/utils/get-base-url';
 import { type FhirBundle } from './types';
 import { openmrsFetch, type PatientIdentifier, restBaseUrl } from '@openmrs/esm-framework';
 
-const baseUrl = 'https://staging.ampath.or.ke/hie';
-
 export const getPatientShrSummary = async (crNo: string, locationUuid: string): Promise<FhirBundle> => {
-  const shrSummaryUrl = `${baseUrl}/v1/shr/summary?cr_id=${crNo}&locationUuid=${locationUuid}`;
+  const hieBaseUrl = await getHieBaseUrl();
+  const shrSummaryUrl = `${hieBaseUrl}/v1/shr/summary?cr_id=${crNo}&locationUuid=${locationUuid}`;
   const resp = await openmrsFetch(shrSummaryUrl);
   const data = await resp.json();
   return data;

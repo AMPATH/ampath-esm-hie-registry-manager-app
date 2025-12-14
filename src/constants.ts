@@ -1,1 +1,1 @@
-export const moduleName = '@openmrs/esm-hie-registry-manager';
+export const moduleName = '@ampath/esm-hie-registry-manager-app';
