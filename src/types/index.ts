@@ -15,6 +15,7 @@ export interface PractitionerMembership {
   is_withdrawn: number;
   withdrawal_reason?: string;
   withdrawal_date?: string;
+  license_expires_in_days?: string;
 }
 
 export interface PractitionerLicense {
@@ -143,3 +144,17 @@ export type ValidateHieCustomOtpResponse = {
 };
 
 export type HieOtpValidationStatus = 'valid' | 'invalid';
+
+export type TagType =
+  | 'red'
+  | 'magenta'
+  | 'purple'
+  | 'blue'
+  | 'cyan'
+  | 'teal'
+  | 'green'
+  | 'gray'
+  | 'cool-gray'
+  | 'warm-gray'
+  | 'high-contrast'
+  | 'outline';
