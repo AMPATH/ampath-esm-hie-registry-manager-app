@@ -69,10 +69,13 @@ export const patientChartLinks = getAsyncLifecycle(() => import('./side-nav-link
   moduleName,
 });
 
-export const shrDashboardLink =
-  getSyncLifecycle(
-    createDashboardLink({
-      ...patientChartShrdMetaData,
-    }),
-    { featureName: 'shr', moduleName },
-  );
+export const shrDashboardLink = getSyncLifecycle(
+  createDashboardLink({
+    ...patientChartShrdMetaData,
+  }),
+  { featureName: 'shr', moduleName },
+);
+export const healthWorkerBanner = getAsyncLifecycle(
+  () => import('./hie/health-worker/banner/health-worker-banner'),
+  options,
+);

@@ -54,6 +54,13 @@
       },
       "online": true,
       "offline": true
+    },
+    {
+      "component": "healthWorkerBanner",
+      "name": "hie-health-worker-banner",
+      "slot": "patient-header-slot",
+      "online": true,
+      "offline": false
     }
   ],
   "modals": []
