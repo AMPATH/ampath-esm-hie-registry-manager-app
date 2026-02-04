@@ -1,5 +1,7 @@
 import { openmrsFetch } from '@openmrs/esm-framework';
 import {
+  type HieClientEligibility,
+  type EligibilityFilterDto,
   type FacilitySearchFilter,
   type HieFacility,
   type PractitionerMessage,
@@ -176,4 +178,21 @@ export function formatDate(dateString: string): string {
     month: 'short',
     day: 'numeric',
   });
+}
+
+export async function getClientEligibityStatus(
+  eligibilityFilterDto: EligibilityFilterDto,
+): Promise<HieClientEligibility> {
+  const hieBaseUrl = await getHieBaseUrl();
+  const url = `${hieBaseUrl}/eligibility`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(eligibilityFilterDto),
+  });
+
+  const data = response.json();
+  return data;
 }

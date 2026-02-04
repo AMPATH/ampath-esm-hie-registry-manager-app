@@ -6,6 +6,7 @@ import { type TagType, type PractitionerMessage, type PractitionerSearchParams }
 import styles from './health-worker-banner.scss';
 import { Button, Tag } from '@carbon/react';
 import HealthWorkerModal from '../modal/health-worker-details.modal';
+import { getTagType } from '../../../shared/utils/get-tag-type';
 interface HealthWorkerBannerProps {}
 const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
   const [practitioner, setPractitioner] = useState<PractitionerMessage>();
@@ -52,13 +53,6 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
       return 'red';
     }
   }
-  function getPractioneraActiveType(is_active: number): TagType {
-    if (is_active === 1) {
-      return 'green';
-    } else {
-      return 'red';
-    }
-  }
   function onModalClose() {
     setDisplayDetailsModal(false);
   }
@@ -87,12 +81,7 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
           </Tag>
         </div>
         <div>
-          <Tag
-            className="some-class"
-            size="md"
-            title="Active"
-            type={getPractioneraActiveType(practitioner.membership.is_active)}
-          >
+          <Tag className="some-class" size="md" title="Active" type={getTagType(practitioner.membership.is_active)}>
             {practitioner.membership.is_active ? 'Active' : 'Not Active'}
           </Tag>
         </div>
