@@ -61,6 +61,13 @@
       "slot": "patient-header-slot",
       "online": true,
       "offline": false
+    },
+     {
+      "component": "patientEligibilityBanner",
+      "name": "hie-eligibility-banner",
+      "slot": "patient-banner-tags-slot",
+      "online": true,
+      "offline": false
     }
   ],
   "modals": []

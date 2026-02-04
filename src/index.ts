@@ -79,3 +79,8 @@ export const healthWorkerBanner = getAsyncLifecycle(
   () => import('./hie/health-worker/banner/health-worker-banner'),
   options,
 );
+
+export const patientEligibilityBanner = getAsyncLifecycle(
+  () => import('./hie/eligibility/banner/patient-eligibility-banner'),
+  options,
+);
