@@ -21,6 +21,9 @@ const PatientEligibilityBanner: React.FC<PatientEligibilityBannerProps> = () => 
   }
 
   function getPatientIdentifierByName(identifierName: string) {
+    if (!patient || !patient.identifier) {
+      return null;
+    }
     return patient.identifier.find((id) => {
       return id.type.text.trim().toLowerCase().includes(identifierName.trim().toLowerCase());
     });
