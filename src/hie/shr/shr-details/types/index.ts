@@ -104,6 +104,30 @@ export type ShrBasedOn = {
   identifier: ShrIdentifier;
 };
 
+export type ShrAllergyIntolerance = {
+  resourceType: 'AllergyIntolerance';
+  id: string;
+  meta?: Meta;
+  identifier?: ShrIdentifier[];
+  clinicalStatus?: CodeableConcept;
+  verificationStatus?: CodeableConcept;
+  type?: string;
+  category?: string[];
+  criticality?: string;
+  code?: CodeableConcept;
+  patient?: Reference;
+  encounter?: Reference;
+  onsetDateTime?: string;
+  recordedDate?: string;
+  note?: Annotation[];
+  reaction?: {
+    substance?: CodeableConcept;
+    manifestation?: CodeableConcept[];
+    severity?: string;
+    description?: string;
+  }[];
+};
+
 export type FhirResource =
   | ShrPatient
   | ShrEncounter
@@ -111,7 +135,8 @@ export type FhirResource =
   | ShrServiceRequest
   | ShrObservation
   | ShrSpecimen
-  | ShrMedicationRequest;
+  | ShrMedicationRequest
+  | ShrAllergyIntolerance;
 
 export type ShrPatient = {
   resourceType: 'Patient';
