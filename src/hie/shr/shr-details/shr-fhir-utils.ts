@@ -19,29 +19,28 @@ export function getStatusTagColor(
 
     // Clinical status mapping
     switch (normalized) {
-        case 'active':
+        case 'resolved':
         case 'confirmed':
         case 'final':
         case 'completed':
+        case 'synced':
             return 'green';
+        case 'active':
+        case 'entered-in-error':
+        case 'refuted':
+            return 'red';
         case 'inactive':
-        case 'resolved':
         case 'cancelled':
         case 'stopped':
             return 'gray';
         case 'recurrence':
         case 'relapse':
             return 'purple';
-        case 'entered-in-error':
-        case 'refuted':
-            return 'red';
         case 'unconfirmed':
         case 'provisional':
         case 'draft':
         case 'on-hold':
             return 'cyan';
-        case 'synced':
-            return 'green';
         default:
             return 'blue';
     }

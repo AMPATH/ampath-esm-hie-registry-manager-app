@@ -27,6 +27,8 @@ import styles from './shr-summary.component.scss';
 
 type ShrRendererProps = {
   shrBundle: FhirBundle;
+  isLoading?: boolean;
+  onFetchPage?: (offset: number, count: number) => void;
 };
 
 type InvestigationTab = 'All' | 'Lab' | 'Radiology' | 'Procedures';
@@ -96,7 +98,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
 /* ────────────────────────────────────────────────────────── */
 /*  Main SHR Summary Component                                */
 /* ────────────────────────────────────────────────────────── */
-const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle }) => {
+const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle, isLoading, onFetchPage }) => {
   const [activeInvestigationTab, setActiveInvestigationTab] = useState<InvestigationTab>('All');
   const [investigationPage, setInvestigationPage] = useState(1);
   const [investigationPageSize, setInvestigationPageSize] = useState(5);
@@ -138,21 +140,6 @@ const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle }) => {
     }
     return shrBundle.timestamp;
   }, [shrBundle]);
-
-  /* ── Patient NUPI identifier ────────────────────────── */
-  const patientEntry = useMemo(() => {
-    if (!shrBundle?.entry) return undefined;
-    return shrBundle.entry.find((e) => e.resource.resourceType === 'Patient');
-  }, [shrBundle]);
-
-  const nupi = useMemo(() => {
-    if (!patientEntry || patientEntry.resource.resourceType !== 'Patient') return 'N/A';
-    const patient = patientEntry.resource as any;
-    const nupiId = patient.identifier?.find((id: any) =>
-      id.type?.coding?.some((c: any) => c.code === 'NUPI'),
-    );
-    return nupiId?.value ?? 'N/A';
-  }, [patientEntry]);
 
   /* ── Helper: get vitals display ─────────────────────── */
   const getVitalValue = useCallback(
@@ -197,7 +184,9 @@ const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle }) => {
     return (
       <Tile className={styles.emptyState}>
         <Hospital size={48} />
-        <p className={styles.emptyStateText}>No SHR records found for this patient.</p>
+        <p className={styles.emptyStateText}>
+          {isLoading ? 'Loading Shared Health Record data...' : 'No Shared Health Record data found for this patient.'}
+        </p>
       </Tile>
     );
   }
@@ -221,7 +210,7 @@ const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle }) => {
       {/* ── Header Card ───────────────────────────────────── */}
       <div className={styles.headerCard}>
         <div className={styles.headerTitle}>
-          <h3 className={styles.headerTitleText}>SHR (Super Highway Record)</h3>
+          <h3 className={styles.headerTitleText}>Shared Health Record</h3>
           <span className={styles.statusBadge}>
             Status: <Tag type={getStatusTagColor('synced')} size="sm">Synced</Tag>
             <Checkmark size={16} className={styles.statusIcon} />
@@ -231,10 +220,6 @@ const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle }) => {
           <div className={styles.headerMetaItem}>
             <span className={styles.headerMetaLabel}>Date Pulled:</span>
             <span className={styles.headerMetaValue}>{formatShrDate(encounterDate)}</span>
-          </div>
-          <div className={styles.headerMetaItem}>
-            <span className={styles.headerMetaLabel}>NUPI:</span>
-            <span className={styles.headerMetaValue}>{nupi}</span>
           </div>
           <div className={styles.headerMetaItem}>
             <span className={styles.headerMetaLabel}>Facility MFL Code:</span>
@@ -357,7 +342,11 @@ const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle }) => {
           }
           onViewFhirJson={handleViewFhirJson}
         >
-          {investigationRows.length === 0 ? (
+          {isLoading ? (
+            <div className={styles.shrDataTable}>
+              <DataTableSkeleton columnCount={4} rowCount={5} showHeader={false} showToolbar={false} />
+            </div>
+          ) : investigationRows.length === 0 ? (
             <p className={styles.emptyStateText}>No investigation results found.</p>
           ) : (
             <div className={styles.shrDataTable}>
@@ -402,6 +391,9 @@ const ShrRendererComponent: React.FC<ShrRendererProps> = ({ shrBundle }) => {
                   onChange={({ page, pageSize }: { page: number; pageSize: number }) => {
                     setInvestigationPage(page);
                     setInvestigationPageSize(pageSize);
+                    if (onFetchPage) {
+                      onFetchPage((page - 1) * pageSize, pageSize);
+                    }
                   }}
                   size="sm"
                 />
