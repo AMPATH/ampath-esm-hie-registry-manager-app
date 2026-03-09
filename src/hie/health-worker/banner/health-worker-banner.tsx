@@ -144,26 +144,6 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
             Registration ID: {practitioner.membership.registration_id}
           </Tag>
         </div>
-        <div>
-          <Tag
-            className="some-class"
-            size="md"
-            title="Status"
-            type={getPractionerStatusType(practitioner.membership.status)}
-          >
-            Membership: {practitioner.membership.status}
-          </Tag>
-        </div>
-        <div>
-          <Tag className="some-class" size="md" title="Active" type={getTagType(practitioner.membership.is_active)}>
-            Membership: {practitioner.membership.is_active ? 'Active' : 'Not Active'}
-          </Tag>
-        </div>
-        <div>
-          <Tag className="some-class" size="md" title="Expiry" type="gray">
-            Membership Expiry in {practitioner.membership.license_expires_in_days} days
-          </Tag>
-        </div>
         {latestLicense ? (
           <>
             <div>

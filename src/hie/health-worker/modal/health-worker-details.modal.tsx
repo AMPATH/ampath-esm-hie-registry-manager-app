@@ -66,6 +66,10 @@ const HealthWorkerModal: React.FC<HealthWorkerModalProps> = ({ selectedPractitio
                     </Tag>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem' }}>
+                    <strong style={{ minWidth: '150px' }}>Licence Expires in </strong>
+                    {selectedPractitioner.membership.license_expires_in_days} Days
+                  </div>
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem' }}>
                     <strong style={{ minWidth: '150px' }}>Licensing Body</strong>
                     <span>{selectedPractitioner.membership.licensing_body}</span>
                   </div>
