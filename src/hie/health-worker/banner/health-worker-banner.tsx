@@ -43,11 +43,16 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
       try {
         const practitioner = await searchPractitioner(searchParams, locationUuid);
         setPractitioner(practitioner);
-        showSnackbar({
+        if(refresh){
+          // only show success alert if it was a sync records action
+          showSnackbar({
           kind: 'success',
           title: 'Successfully synced health worker records',
           subtitle: 'Successfully synced health worker records',
         });
+
+        }
+        
         checkLicenseValidity(practitioner.licenses);
       } catch (error) {
         showSnackbar({
