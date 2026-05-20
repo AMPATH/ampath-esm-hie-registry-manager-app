@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { navigate } from '@openmrs/esm-framework';
+import { navigate, useSession } from '@openmrs/esm-framework';
+import { userHasAccess } from '@openmrs/esm-framework';
 
 export default function NavLinkMenu() {
   const [open, setOpen] = useState(false);
-
   const toggleDropdown = () => setOpen(!open);
+  const session = useSession();
+  const canViewFacilityDetails = userHasAccess('O3 View HIE Facility Registry Details',{
+    privileges: session.user?.privileges ?? [],
+    roles: session.user?.roles ?? []
+  });
+  const canViewHwrDetails = userHasAccess('O3 View HIE Health Worker Registry Details',{
+    privileges: session.user?.privileges ?? [],
+    roles: session.user?.roles ?? []
+  });
 
   const goTo = (path) => {
     navigate({ to: `${window.spaBase}/${path}` });
@@ -44,8 +53,8 @@ export default function NavLinkMenu() {
             padding: '0.25rem 0',
           }}
         >
-
-           <div
+          {
+            canViewHwrDetails &&  <div
             onClick={() => goTo('hie/health-workers')}
             style={menuItemStyle}
             onMouseEnter={(e) => (e.currentTarget.style.background = '#005d5d')}
@@ -53,8 +62,9 @@ export default function NavLinkMenu() {
           >
             Health Worker Registry
           </div>
-          
-          <div
+          }
+          {
+            canViewFacilityDetails && <div
             onClick={() => goTo('hie/facilities')}
             style={menuItemStyle}
             onMouseEnter={(e) => (e.currentTarget.style.background = '#005d5d')}
@@ -62,6 +72,8 @@ export default function NavLinkMenu() {
           >
             Facility Registry
           </div>
+          }
+          
         </div>
       )}
     </div>

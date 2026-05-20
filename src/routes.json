@@ -25,6 +25,7 @@
     {
       "component": "hieNavLink",
       "name": "hie-registry-nav",
+      "privileges": ["O3 View HIE Facility Registry Details","O3 View HIE Health Worker Registry Details"],
       "slot": "app-menu-slot",
       "online": true,
       "offline": false,
