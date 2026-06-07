@@ -45,7 +45,7 @@ export async function searchPractitioner(
   const url = `${hieBaseUrl}/practitioner/search?${queryParams.toString()}`;
 
   try {
-    const response = await fetch(url, {
+    const response = await openmrsFetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export async function getAllProviders(locationUuid: string): Promise<Provider[]>
   const url = `${hieBaseUrl}/amrs/providers/active?locationUuid=${locationUuid}`;
 
   try {
-    const response = await fetch(url, {
+    const response = await openmrsFetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export async function getProviderByNationalId(nationalId: string): Promise<Provi
   const url = `${hieBaseUrl}/amrs/provider/national-id?nationalId=${nationalId}`;
 
   try {
-    const response = await fetch(url, {
+    const response = await openmrsFetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ export async function getClientEligibityStatus(
 ): Promise<HieClientEligibility> {
   const hieBaseUrl = await getHieBaseUrl();
   const url = `${hieBaseUrl}/eligibility`;
-  const response = await fetch(url, {
+  const response = await openmrsFetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
