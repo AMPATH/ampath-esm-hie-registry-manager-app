@@ -1,0 +1,23 @@
+.facilityDetailsLayout{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .headerSection{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+    .contentSection{
+        display: flex;
+        flex-direction: column;
+        row-gap: 5px;
+        width: 100%;
+    }
+}
+
+.rowData{
+     display: flex;
+     flex-direction: column;
+     row-gap: 5px;
+     width: 100%;
+}

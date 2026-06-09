@@ -26,8 +26,16 @@ export const configSchema = {
     _description: 'HIE Endpoint',
     _default: '',
   },
+  facilityRegistrationCodeUuid: {
+    hieBaseUrl: {
+    _type: Type.String,
+    _description: 'HIE Endpoint',
+    _default: '',
+  },
+  }
 };
 
 export type Config = {
-  hieBaseUrl: Array<string>;
+  hieBaseUrl: string;
+  facilityRegistrationCodeUuid: string;
 };

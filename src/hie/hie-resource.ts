@@ -3,11 +3,11 @@ import {
   type HieClientEligibility,
   type EligibilityFilterDto,
   type FacilitySearchFilter,
-  type HieFacility,
   type PractitionerMessage,
   type PractitionerResponse,
   type PractitionerSearchParams,
   type Provider,
+  type FacilityRegistryApiResponse,
 } from '../types';
 import { getHieBaseUrl } from '../shared/utils/get-base-url';
 
@@ -137,7 +137,7 @@ export async function fetchFacilityDetails(payload: FacilitySearchFilter) {
 
   const searchFacilityUrl = `${hieBaseUrl}/facility/search?${params}`;
   const resp = await openmrsFetch(searchFacilityUrl);
-  const data: { message: HieFacility } = await resp.json();
+  const data: FacilityRegistryApiResponse = await resp.json();
   return data;
 }
 
