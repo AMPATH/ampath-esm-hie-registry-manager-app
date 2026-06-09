@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { openmrsFetch, restBaseUrl, showSnackbar, useSession } from '@openmrs/esm-framework';
+import { type ConfigObject, openmrsFetch, restBaseUrl, showSnackbar, useConfig, useSession } from '@openmrs/esm-framework';
 import styles from './facility-registry.css';
 import { Button, InlineLoading, Select, SelectItem, TextInput } from '@carbon/react';
 import { type Location } from '@openmrs/esm-framework/src';
@@ -8,10 +8,11 @@ import { type FacilitySearchFilter, type HieFacility } from '../types';
 import { fetchFacilityDetails, getErrorResponseMessage } from './hie-resource';
 
 const FacilityRegistry: React.FC = () => {
+  const { facilityRegistrationCodeUuid } = useConfig<ConfigObject>();
   const [locations, setLocations] = useState([]);
-  const [selectedValue, setSelectedValue] = useState<string>(null);
-  const [selectedFilter, setSelectedFilter] = useState<string>(null);
-  const [currentFacility, setCurrentFacility] = useState<HieFacility>(null);
+  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedFilter, setSelectedFilter] = useState<string>('');
+  const [currentFacility, setCurrentFacility] = useState<HieFacility | null>(null);
   const locationOptions: { value: string; label: string }[] = generateLocationOptions(locations);
   const [loading, setLoading] = useState<boolean>(false);
   const session = useSession();
@@ -32,7 +33,7 @@ const FacilityRegistry: React.FC = () => {
 
     const l = locations.map((l) => {
       return {
-        value: getMflCode(l),
+        value: getFrCode(l),
         label: l?.display ?? '',
       };
     });
@@ -40,27 +41,25 @@ const FacilityRegistry: React.FC = () => {
   }
 
   const getFilterType = (selectedFilter: string) => {
-    let filterType = 'facilityCode';
-    if (['location', 'facility_code'].includes(selectedFilter)) {
-      filterType = 'facilityCode';
+    let filterType = '';
+    if(selectedFilter === 'location'){
+         filterType = 'registrationCode'
+    }else{
+       filterType = selectedFilter;
     }
-    if (selectedFilter === 'registration_number') {
-      filterType = 'registrationNumber';
-    }
-
     return filterType;
   };
 
-  function getMflCode(location: Location) {
+  function getFrCode(location: Location) {
     const attributes = location.attributes ?? [];
-    let mflCodeAttribute;
+    let frCodeAttribute;
     if (attributes.length > 0) {
-      mflCodeAttribute = attributes.find((a) => {
-        return a.attributeType.uuid === 'fe45d489-087c-4b13-b2ec-3b294d7aee32';
+      frCodeAttribute = attributes.find((a) => {
+        return a.attributeType.uuid === facilityRegistrationCodeUuid;
       });
     }
-    if (mflCodeAttribute) {
-      return mflCodeAttribute.value;
+    if (frCodeAttribute) {
+      return frCodeAttribute.value;
     }
 
     return '';
@@ -105,7 +104,7 @@ const FacilityRegistry: React.FC = () => {
     const payload: FacilitySearchFilter = {
       filterType: getFilterType(data.filterType),
       filterValue: data.value,
-      locationUuid: session?.sessionLocation?.uuid,
+      locationUuid: session?.sessionLocation?.uuid ?? '',
     };
 
     return payload;
@@ -153,8 +152,10 @@ const FacilityRegistry: React.FC = () => {
             <Select id="filter" labelText="Select a Filter" size="md" onChange={handleFilterChange}>
               <SelectItem text="Select Filter" value="" />;
               <SelectItem text="Location" value="location" />
-              <SelectItem text="Facility/MFL Code" value="facility_code" />
-              <SelectItem text="Registration Number" value="registration_number" />
+              <SelectItem text="Registration Number" value="registrationNumber" />
+              <SelectItem text="Registration Code" value="registrationCode" />
+              <SelectItem text="License Number" value="licenseNumber" />
+              <SelectItem text="SHA License Number" value="shaLicenseNumber" />
             </Select>
           </div>
 
@@ -188,7 +189,9 @@ const FacilityRegistry: React.FC = () => {
         </div>
         <div></div>
         <div className={styles.facilityDetails}>
-          <FacilityDetails facility={currentFacility} />
+          {
+            currentFacility && <FacilityDetails facility={currentFacility} />
+          }
         </div>
       </div>
     </>

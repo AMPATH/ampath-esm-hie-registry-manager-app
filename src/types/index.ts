@@ -86,28 +86,91 @@ export type FacilitySearchFilter = {
   locationUuid: string;
 };
 
-export type HieFacility = {
-  id: string;
-  facility_name: string;
-  registration_number: string;
-  facility_code: string;
-  regulator: string;
-  facility_level: string;
-  facility_category: string;
-  facility_owner: string;
-  facility_type: string;
-  county: string;
-  sub_county: string;
-  ward: string;
-  found: number;
-  approved: number;
-  operational_status: string;
-  current_license_expiry_date: string;
-};
-
-export type HieFacilitySearchResponse = {
+export interface FacilityRegistryApiResponse {
   message: HieFacility;
-};
+}
+
+export interface HieFacility {
+  registrationNumber: string;
+  frCode: string;
+  regulatoryOperationalStatus: FacilityOperationalStatus;
+  SHAOperationStatus: FacilityOperationalStatus;
+  facilityLicenseStatus: string;
+  licenseNumber: string;
+  facilityLicenseStartDate: string;
+  facilityLicenseEndDate: string;
+  regulatoryBody: string;
+  shaContractStatus: string;
+  shaConstractStartDate: string | null;
+  shaConstractEndDate: string | null;
+  officialName: string;
+  kephLevel: string;
+  fidCode: string;
+  facilityOwnership: string;
+  facilityType: string;
+  pcnCode: string | null;
+  isHub: boolean;
+  facilityContacts: unknown | null;
+  facilityPhoneNumber: string;
+  facilityEmail: string;
+  facilityAdministratorName: string;
+  facilityAdministratorEmail: string;
+  facilityAdministratorPhone: string;
+  facilityAdministratorIdentifier: string;
+  facilityAgent: string;
+  address: FacilityAddress;
+  uuid: string | null;
+  bedOccupancy: FacilityBedOccupancy;
+  shaContractedServices: unknown[];
+  approvedServices: FacilityApprovedService[];
+  linkedFacilities: unknown | null;
+}
+
+export interface FacilityOperationalStatus {
+  operationalStatus: string;
+  operationalStatusReason: string;
+  suspensionReason: string;
+  suspensionDate: string | null;
+  reinstatementRecommendations: string;
+  earliestReinstatementDate: string;
+  reinstatementDate: string | null;
+}
+
+export interface FacilityAddress {
+  country: string;
+  countyCode: string;
+  county: string;
+  subCountyCode: string;
+  subCounty: string;
+  ward: string | null;
+  postalAddress: string;
+  physicalLocation: string;
+  roadStreet: string | null;
+  plotNumber: string | null;
+  prominentLandmark: string | null;
+  town: string;
+  constituency: string | null;
+  latitude: string;
+  longitude: string;
+}
+
+export interface FacilityBedOccupancy {
+  totalBeds: number;
+  normalBeds: number;
+  icuBeds: number;
+  hduBeds: number;
+  dialysisBeds: number;
+  numberOfCots: number;
+}
+
+export interface FacilityApprovedService {
+  serviceCode: string;
+  serviceName: string;
+  serviceStatus: boolean;
+  effectiveStart: string;
+  effectiveEnd: string | null;
+}
+
 
 export enum HieClientVerificationIdentifierType {
   NationalID = 'National ID',
