@@ -23,6 +23,7 @@ import { showSnackbar, useSession } from '@openmrs/esm-framework';
 import { searchPractitioner, getAllProviders, formatDate } from './hie-resource';
 import { type PractitionerMessage, type Provider } from '../types';
 import HealthWorkerModal from './health-worker/modal/health-worker-details.modal';
+import styles from './health-worker-registry.scss';
 
 export default function HealthWorkerSearchPage() {
   const session = useSession();
@@ -199,6 +200,8 @@ export default function HealthWorkerSearchPage() {
   }));
 
   return (
+   <div className={styles.hwrLayout}>
+
     <Grid fullWidth className="omrs-main-content" style={{ padding: '1rem' }}>
       <Column sm={4} md={8} lg={16}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1.5rem' }}>Health Worker Search</h2>
@@ -222,9 +225,6 @@ export default function HealthWorkerSearchPage() {
               disabled={isSearching}
             >
               <SelectItem value="nationalId" text="National ID" />
-              <SelectItem value="registrationId" text="Registration ID" />
-              <SelectItem value="licenseNumber" text="License Number" />
-              <SelectItem value="name" text="Name" />
             </Select>
           </div>
 
@@ -354,5 +354,6 @@ export default function HealthWorkerSearchPage() {
         />
       </Column>
     </Grid>
+    </div>
   );
 }

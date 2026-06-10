@@ -9,7 +9,7 @@ import {
   type Provider,
   type FacilityRegistryApiResponse,
 } from '../types';
-import { getHieBaseUrl } from '../shared/utils/get-base-url';
+import { getEtlBaseUrl, getHieBaseUrl } from '../shared/utils/get-base-url';
 
 /**
  * Search for a practitioner by various identifiers
@@ -75,8 +75,8 @@ export async function searchPractitioner(
  * @returns Promise with array of providers
  */
 export async function getAllProviders(locationUuid: string): Promise<Provider[]> {
-  const hieBaseUrl = await getHieBaseUrl();
-  const url = `${hieBaseUrl}/amrs/providers/active?locationUuid=${locationUuid}`;
+  const etlBaseUrl = await getEtlBaseUrl();
+  const url = `${etlBaseUrl}/facility-providers?locationUuid=${locationUuid}`;
 
   try {
     const response = await openmrsFetch(url, {
@@ -86,12 +86,12 @@ export async function getAllProviders(locationUuid: string): Promise<Provider[]>
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    const resp: { data?: Provider[]; error?: string; message?: string} = await response.json();
 
-    const data: Provider[] = await response.json();
-    return data;
+    if (resp.error) {
+      throw new Error(`HTTP error! status: ${resp.message}`);
+    }
+    return resp.data ?? [];
   } catch (error) {
     console.error('Error fetching all providers:', error);
     throw error;
