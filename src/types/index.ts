@@ -74,6 +74,9 @@ export interface Provider {
   provider_id: number;
   provider_names: string | null;
   national_id: string;
+  license_status: string | null;
+  license_expiry_date: string | null;
+  speciality: string | null;
 }
 
 export interface ProvidersResponse {
