@@ -17,6 +17,7 @@ import {
   Modal,
   Tag,
   InlineLoading,
+  ComboBox,
 } from '@carbon/react';
 import { Search, UserMultiple } from '@carbon/react/icons';
 import { showSnackbar, useSession } from '@openmrs/esm-framework';
@@ -35,6 +36,7 @@ export default function HealthWorkerSearchPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingProviders, setIsLoadingProviders] = useState(false);
   const [locationUuid, setLocationUuid] = useState<string>('');
+  const [selectedLicenseStatus, setSelectedLicenseStatus] = useState<string>();
 
   useEffect(() => {
     // Get location UUID from session
@@ -183,10 +185,22 @@ export default function HealthWorkerSearchPage() {
     }
   };
 
+    function statusChangeHandler(selectedStatus: { selectedItem: { id: string; text: string } }){
+    let status = '';
+    if(selectedStatus && selectedStatus.selectedItem){
+        status = selectedStatus.selectedItem.id;
+    }
+    
+    setSelectedLicenseStatus(status);
+  }
+
   const headers = [
     { key: 'index', header: '#' },
     { key: 'providerName', header: 'PROVIDER NAME' },
     { key: 'nationalId', header: 'NATIONAL ID' },
+    { key: 'licenseStatus', header: 'LICENSE STATUS' },
+    { key: 'licenseExpiryDate', header: 'LICENSE EXPIRY DATE' },
+    { key: 'speciality', header: 'SPECIALITY' },
     { key: 'location', header: 'LOCATION' },
     { key: 'actions', header: 'ACTIONS' },
   ];
@@ -195,9 +209,45 @@ export default function HealthWorkerSearchPage() {
     id: String(p.provider_id),
     index: idx + 1,
     providerName: p.provider_names || 'N/A',
+    licenseStatus: formatLicenseStatus(p.license_status ?? ''),
+    licenseExpiryDate: p.license_expiry_date ?? '',
     nationalId: p.national_id,
     location: p.location_name,
+    speciality: p.speciality ?? ''
   }));
+
+  function formatLicenseStatus(licenseStatus: string){
+      if(licenseStatus === 'Not Licensed. Update requested from regulator. Check again after awhile.'){
+         return 'Not Licensed';
+      }else if(licenseStatus === null || !licenseStatus){
+        return 'N/A';
+      }else{
+        return licenseStatus;
+      }
+  }
+
+  const filteredRows = rows.filter((row)=>{
+     if(!selectedLicenseStatus){
+        return true;
+     }else{
+       return row.licenseStatus === selectedLicenseStatus;
+     }
+  });
+
+  const licenseStatusOptions = [
+        {
+          text: 'ALL',
+          id: '',
+        },
+        {
+          text: 'Licensed',
+          id: 'Licensed',
+        },
+        {
+          text: 'Not Licensed',
+          id: 'Not Licensed',
+        },
+  ];
 
   return (
    <div className={styles.hwrLayout}>
@@ -270,6 +320,7 @@ export default function HealthWorkerSearchPage() {
           </Button>
         </div>
 
+
         {/* Providers Table */}
         {providers.length > 0 && (
           <div>
@@ -290,8 +341,19 @@ export default function HealthWorkerSearchPage() {
             <div style={{ marginBottom: '1rem', padding: '0.75rem', backgroundColor: '#e0e0e0' }}>
               <strong>Providers List</strong>
             </div>
+            <div className={styles.filtersRow}>
+           <div className={styles.filter}>
+              <ComboBox
+                        onChange={statusChangeHandler}
+                        id="license-status"
+                        items={licenseStatusOptions}
+                        itemToString={(item) => (item ? item.text : '')}
+                        titleText="License Status"
+                />
+            </div>
+          </div>
 
-            <DataTable rows={rows} headers={headers}>
+            <DataTable rows={filteredRows} headers={headers}>
               {({ rows, headers, getHeaderProps, getRowProps }) => (
                 <TableContainer>
                   <Table size="md">
