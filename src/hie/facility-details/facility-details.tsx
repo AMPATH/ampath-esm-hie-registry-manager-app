@@ -40,19 +40,13 @@ const FacilityDetails: React.FC<FacilityProps> = ({ facility }) => {
                   <TableCell>
                     <strong> FID Code </strong>
                   </TableCell>
-                  <TableCell>{facility.fidCode}</TableCell>
+                  <TableCell>{facility.frCode}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
                     <strong> Registration Number </strong>
                   </TableCell>
                   <TableCell>{facility.registrationNumber}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <strong> Facility Registry Code </strong>
-                  </TableCell>
-                  <TableCell>{facility.frCode}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
@@ -168,12 +162,6 @@ const FacilityDetails: React.FC<FacilityProps> = ({ facility }) => {
                     <strong>Facility Administrator Phone</strong>
                   </TableCell>
                   <TableCell>{facility.facilityAdministratorPhone}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <strong>Facility Administrator Identifier</strong>
-                  </TableCell>
-                  <TableCell>{facility.facilityAdministratorIdentifier}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>

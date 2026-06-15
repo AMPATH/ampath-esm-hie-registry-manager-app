@@ -57,7 +57,7 @@ const HealthWorkerModal: React.FC<HealthWorkerModalProps> = ({ selectedPractitio
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem' }}>
                     <strong style={{ minWidth: '150px' }}>Registration ID</strong>
-                    <span>{selectedPractitioner.membership.registration_id}</span>
+                    <span>{selectedPractitioner.membership.id}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem' }}>
                     <strong style={{ minWidth: '150px' }}>Status</strong>

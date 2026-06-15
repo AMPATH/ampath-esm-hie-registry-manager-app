@@ -164,7 +164,12 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
       <div className={styles.hwBannerLayout}>
         <div>
           <Tag className="some-class" size="md" title="Expiry" type="blue">
-            Registration ID: {practitioner.membership.registration_id}
+            {practitioner.membership.id}
+          </Tag>
+        </div>
+        <div>
+          <Tag className="some-class" size="md" title="Expiry" type="blue">
+            Speciality: {practitioner.membership.specialty ? practitioner.membership.specialty : (practitioner.professional_details.specialty ?? '')}
           </Tag>
         </div>
         {latestLicense ? (
