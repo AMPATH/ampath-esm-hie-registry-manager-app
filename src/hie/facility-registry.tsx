@@ -153,9 +153,7 @@ const FacilityRegistry: React.FC = () => {
               <SelectItem text="Select Filter" value="" />;
               <SelectItem text="Location" value="location" />
               <SelectItem text="Registration Number" value="registrationNumber" />
-              <SelectItem text="Registration Code" value="registrationCode" />
-              <SelectItem text="License Number" value="licenseNumber" />
-              <SelectItem text="SHA License Number" value="shaLicenseNumber" />
+              <SelectItem text="FID Code" value="registrationCode" />
             </Select>
           </div>
 
