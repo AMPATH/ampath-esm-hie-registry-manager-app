@@ -21,8 +21,8 @@ import {
 } from '@carbon/react';
 import { Search, UserMultiple } from '@carbon/react/icons';
 import { showSnackbar, useSession } from '@openmrs/esm-framework';
-import { searchPractitioner, getAllProviders, formatDate } from './hie-resource';
-import { type PractitionerMessage, type Provider } from '../types';
+import { searchPractitioner, getAllProviders, batchSyncFacilityHwrRecords } from './hie-resource';
+import { type HwrBatchSyncDto, type PractitionerMessage, type Provider } from '../types';
 import HealthWorkerModal from './health-worker/modal/health-worker-details.modal';
 import styles from './health-worker-registry.scss';
 
@@ -249,6 +249,37 @@ export default function HealthWorkerSearchPage() {
         },
   ];
 
+  const batchSyncFacilityHealthWorkerRecords = async ()=>{
+    setIsSearching(true);
+    setIsLoadingProviders(true);
+      const payload: HwrBatchSyncDto = {
+        location_uuid: locationUuid
+      };
+      try{
+          const resp = await batchSyncFacilityHwrRecords(payload);
+          if(resp){
+
+            showSnackbar({
+              title: 'Success',
+              subtitle: 'Successfully synced provider records with HIE',
+              kind: 'success',
+            });
+
+          }
+      }catch(error){
+         showSnackbar({
+            title: 'Error',
+            subtitle: 'Failed to sync provider records with HIE',
+            kind: 'error',
+          });
+      }finally{
+         setIsSearching(false);
+         setIsLoadingProviders(false);
+      }
+     
+     
+  }
+
   return (
    <div className={styles.hwrLayout}>
 
@@ -350,6 +381,9 @@ export default function HealthWorkerSearchPage() {
                         itemToString={(item) => (item ? item.text : '')}
                         titleText="License Status"
                 />
+            </div>
+            <div className={styles.actionBtn}>
+               <Button kind='primary' onClick={batchSyncFacilityHealthWorkerRecords}>HWR Sync </Button>
             </div>
           </div>
 

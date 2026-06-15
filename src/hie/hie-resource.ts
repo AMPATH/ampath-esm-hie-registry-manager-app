@@ -8,6 +8,7 @@ import {
   type PractitionerSearchParams,
   type Provider,
   type FacilityRegistryApiResponse,
+  type HwrBatchSyncDto,
 } from '../types';
 import { getEtlBaseUrl, getHieBaseUrl } from '../shared/utils/get-base-url';
 
@@ -191,6 +192,21 @@ export async function getClientEligibityStatus(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(eligibilityFilterDto),
+  });
+
+  const data = response.json();
+  return data;
+}
+
+export async function batchSyncFacilityHwrRecords(hwrBatchSyncDto: HwrBatchSyncDto){
+  const hieBaseUrl = await getHieBaseUrl();
+  const url = `${hieBaseUrl}/hwr/batch-sync`;
+  const response = await openmrsFetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(hwrBatchSyncDto),
   });
 
   const data = response.json();

@@ -289,3 +289,7 @@ export enum RequestIdTypes {
   BirthCertificate2 = 10,
   HouseholdNumber = 11,
 }
+
+export type HwrBatchSyncDto = {
+  location_uuid: string;
+}
