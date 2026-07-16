@@ -9,7 +9,7 @@ import {
   type PractitionerLicense,
 } from '../../../types';
 import styles from './health-worker-banner.scss';
-import { Button, InlineLoading, Tag } from '@carbon/react';
+import { Button, Tag } from '@carbon/react';
 import HealthWorkerModal from '../modal/health-worker-details.modal';
 import { getTagType } from '../../../shared/utils/get-tag-type';
 interface HealthWorkerBannerProps {}
@@ -94,9 +94,6 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
   }
   function showDetailsModal() {
     setDisplayDetailsModal(true);
-  }
-  function syncHealthWorkerDetails() {
-    getProviderDetails(true);
   }
   const isWithin30Days = (targetDate: string) => {
     const today = new Date().getMilliseconds();
@@ -196,17 +193,6 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
         <div>
           <Button size="sm" kind="tertiary" onClick={showDetailsModal}>
             View
-          </Button>
-        </div>
-        <div>
-          <Button size="sm" kind="secondary" onClick={syncHealthWorkerDetails}>
-            {loading ? (
-              <>
-                <InlineLoading description="Syncing..." />
-              </>
-            ) : (
-              <>Sync</>
-            )}
           </Button>
         </div>
         {practitioner && displayDetailsModal ? (

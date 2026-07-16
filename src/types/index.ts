@@ -77,6 +77,7 @@ export interface Provider {
   license_status: string | null;
   license_expiry_date: string | null;
   speciality: string | null;
+  licenseBody: string | null;
 }
 
 export interface ProvidersResponse {

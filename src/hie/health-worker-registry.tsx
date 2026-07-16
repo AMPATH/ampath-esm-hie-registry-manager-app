@@ -201,6 +201,7 @@ export default function HealthWorkerSearchPage() {
     { key: 'licenseStatus', header: 'LICENSE STATUS' },
     { key: 'licenseExpiryDate', header: 'LICENSE EXPIRY DATE' },
     { key: 'speciality', header: 'SPECIALITY' },
+    { key: 'licenseBody', header: 'LICENSE BODY' },
     { key: 'location', header: 'LOCATION' },
     { key: 'actions', header: 'ACTIONS' },
   ];
@@ -213,7 +214,8 @@ export default function HealthWorkerSearchPage() {
     licenseExpiryDate: p.license_expiry_date ?? '',
     nationalId: p.national_id,
     location: p.location_name,
-    speciality: p.speciality ?? ''
+    speciality: p.speciality ?? '',
+    licenseBody: p?.licenseBody ?? ''
   }));
 
   function formatLicenseStatus(licenseStatus: string){
@@ -248,38 +250,6 @@ export default function HealthWorkerSearchPage() {
           id: 'Not Licensed',
         },
   ];
-
-  const batchSyncFacilityHealthWorkerRecords = async ()=>{
-    setIsSearching(true);
-    setIsLoadingProviders(true);
-      const payload: HwrBatchSyncDto = {
-        location_uuid: locationUuid
-      };
-      try{
-          const resp = await batchSyncFacilityHwrRecords(payload);
-          if(resp){
-
-            showSnackbar({
-              title: 'Success',
-              subtitle: 'Successfully synced provider records with HIE',
-              kind: 'success',
-            });
-
-          }
-      }catch(error){
-         showSnackbar({
-            title: 'Error',
-            subtitle: 'Failed to sync provider records with HIE',
-            kind: 'error',
-          });
-      }finally{
-         setIsSearching(false);
-         setIsLoadingProviders(false);
-      }
-     
-     
-  }
-
   return (
    <div className={styles.hwrLayout}>
 
@@ -381,9 +351,6 @@ export default function HealthWorkerSearchPage() {
                         itemToString={(item) => (item ? item.text : '')}
                         titleText="License Status"
                 />
-            </div>
-            <div className={styles.actionBtn}>
-               <Button kind='primary' onClick={batchSyncFacilityHealthWorkerRecords}>HWR Sync </Button>
             </div>
           </div>
 
