@@ -1,0 +1,5 @@
+const FACILITY_REGISTRY_CODE_UUID = '124a2571-43de-40f3-829a-0e0352360891';
+
+export const LocationAtributeTypeUuids = {
+    FACILITY_REGISTRY_CODE_UUID
+};

@@ -3,9 +3,9 @@ import { type ConfigObject, openmrsFetch, restBaseUrl, showSnackbar, useConfig, 
 import styles from './facility-registry.css';
 import { Button, InlineLoading, Select, SelectItem, TextInput } from '@carbon/react';
 import { type Location } from '@openmrs/esm-framework/src';
-import FacilityDetails from './facility-details/facility-details';
-import { type FacilitySearchFilter, type HieFacility } from '../types';
-import { fetchFacilityDetails, getErrorResponseMessage } from './hie-resource';
+import FacilityDetails from '../facility-details/facility-details';
+import { type FacilitySearchFilter, type HieFacility } from '../../types';
+import { fetchFacilityDetails, getErrorResponseMessage } from '../hie-resource';
 
 const FacilityRegistry: React.FC = () => {
   const { facilityRegistrationCodeUuid } = useConfig<ConfigObject>();

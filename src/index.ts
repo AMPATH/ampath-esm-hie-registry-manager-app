@@ -57,7 +57,7 @@ export function startupApp() {
   attach('nav-app-menu-slot', 'hie-nav-menu');
 }
 
-export const facilityRegistryRoot = getAsyncLifecycle(() => import('./hie/facility-registry'), options);
+export const facilityRegistryRoot = getAsyncLifecycle(() => import('./hie/facility-registry/facility-registry'), options);
 
 export const healthWorkerRegistryRoot = getAsyncLifecycle(() => import('./hie/health-worker-registry'), options);
 
@@ -82,5 +82,10 @@ export const healthWorkerBanner = getAsyncLifecycle(
 
 export const patientEligibilityBanner = getAsyncLifecycle(
   () => import('./hie/eligibility/banner/patient-eligibility-banner'),
+  options,
+);
+
+export const facilityDetailsBanner = getAsyncLifecycle(
+  () => import('./hie/facility-registry/banner/facility-registry-banner'),
   options,
 );
