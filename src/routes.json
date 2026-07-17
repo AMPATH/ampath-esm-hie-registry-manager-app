@@ -63,10 +63,24 @@
       "online": true,
       "offline": false
     },
-     {
+    {
       "component": "patientEligibilityBanner",
       "name": "hie-eligibility-banner",
       "slot": "patient-banner-tags-slot",
+      "online": true,
+      "offline": false
+    },
+    {
+      "component": "healthWorkerBanner",
+      "name": "hie-worker-header",
+      "slot": "health-worker-hie-header-slot",
+      "online": true,
+      "offline": false
+    },
+    {
+      "component": "facilityDetailsBanner",
+      "name": "hie-facility-header",
+      "slot": "facility-hie-header-slot",
       "online": true,
       "offline": false
     }

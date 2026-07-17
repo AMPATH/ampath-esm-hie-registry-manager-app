@@ -172,11 +172,6 @@ const HealthWorkerBanner: React.FC<HealthWorkerBannerProps> = () => {
         {latestLicense ? (
           <>
             <div>
-              <Tag className="some-class" size="md" title="Expiry" type="blue">
-                License {latestLicense.id}
-              </Tag>
-            </div>
-            <div>
               <Tag
                 className="some-class"
                 size="md"
