@@ -8,8 +8,6 @@ import {
 } from '@openmrs/esm-framework';
 import { moduleName } from './constants';
 import NavLinkMenu from './hie/nav-link-menu';
-import { createDashboardLink } from '@openmrs/esm-patient-common-lib';
-import { patientChartShrdMetaData } from './dashboard.meta';
 
 export const importTranslation = require.context('../translations', false, /.json$/, 'lazy');
 
@@ -62,19 +60,7 @@ export const facilityRegistryRoot = getAsyncLifecycle(() => import('./hie/facili
 export const healthWorkerRegistryRoot = getAsyncLifecycle(() => import('./hie/health-worker-registry'), options);
 
 export const hieNavLink = getSyncLifecycle(NavLinkMenu, options);
-export const shrDetails = getAsyncLifecycle(() => import('./hie/shr/shr-details/shr-details.component'), options);
 
-export const patientChartLinks = getAsyncLifecycle(() => import('./side-nav-links/hie-patient-chart-side-nav-links'), {
-  featureName: 'hie-patient-chart-side-nav-links',
-  moduleName,
-});
-
-export const shrDashboardLink = getSyncLifecycle(
-  createDashboardLink({
-    ...patientChartShrdMetaData,
-  }),
-  { featureName: 'shr', moduleName },
-);
 export const healthWorkerBanner = getAsyncLifecycle(
   () => import('./hie/health-worker/banner/health-worker-banner'),
   options,
